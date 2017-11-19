@@ -9,7 +9,7 @@ html, body {
 }
 
 body {
-    // background-image: url('https://s3-ap-southeast-2.amazonaws.com/c17-galaxy.kvn.io/intergalactic_pursuit_preview.jpg');
+    background-image: url('/assets/images/underwater.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -19,4 +19,18 @@ canvas {
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+button.add-fish {
+    $m: 25px;
+    $h: 50px;
+
+    position: fixed;
+    padding: $m;
+    left: $m;
+    bottom: $m;
+    background-color: transparent;
+    border-radius: $h;
+    border-style: none;
+    cursor: pointer;
 }

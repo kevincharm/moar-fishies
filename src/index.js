@@ -60,7 +60,7 @@ class Fish {
     constructor(world) {
         this.world = world
         this.velocity = 1.
-        this.bounds = new THREE.Vector3(20, 10, 0)
+        this.bounds = new THREE.Vector3(30, 15, 5)
 
         // Load mesh
         const fish1 = world.loadedFbx['fish1']
@@ -73,14 +73,19 @@ class Fish {
         world.addAnimationMixer(mixer)
         this.animationMixer = mixer
         world.scene.add(this.mesh)
-        Object.assign(this.mesh.scale, { x: 0.1, y: 0.1, z: 0.1 })
+        Object.assign(this.mesh.scale, { x: 0.2, y: 0.2, z: 0.2 })
         Object.assign(this.mesh.position, {
-            x: Math.random()*this.bounds.x-this.bounds.x/2,
-            y: Math.random()*this.bounds.y
+            y: this.bounds.y,
+            z: Math.random()*this.bounds.z
         })
+
         this.playAnimation('idle')
 
         this.destination = new THREE.Vector3()
+        Object.assign(this.destination, {
+            x: Math.random()*this.bounds.x-this.bounds.x/2,
+            y: 2.+Math.random()*this.bounds.y
+        })
         this.startDirectionTimer()
 
         world.onRender(t => this.render(t))
@@ -105,10 +110,13 @@ class Fish {
 
     startDirectionTimer() {
         this.directionTimer = setInterval(() => {
-            Object.assign(this.destination, {
-                x: Math.random()*this.bounds.x-this.bounds.x/2,
-                y: Math.random()*this.bounds.y
-            })
+            const rnd = Math.random()*100
+            if (rnd > 50) {
+                Object.assign(this.destination, {
+                    x: Math.random()*this.bounds.x-this.bounds.x/2,
+                    y: 2.+Math.random()*this.bounds.y
+                })
+            }
         }, 2500)
     }
 
@@ -140,9 +148,20 @@ class Fish {
 
 document.addEventListener('DOMContentLoaded', () => {
     const world = new World(window)
-    world.scene.background.set(0x77bbcc)
     const camera = new CustomCamera(world)
-    Object.assign(camera.position, { y: 5, z: 20 })
+    Object.assign(camera.position, { y: 10, z: 40 })
+
+    const w = 80
+    const h = 20
+    const d = 30
+    const t = 0.2
+
+    const sandTexture = new THREE.TextureLoader().load('/assets/materials/sand.jpg')
+    const sandMaterial = new THREE.MeshLambertMaterial({ map: sandTexture })
+    const sandGeometry = new THREE.BoxGeometry(w, 1, d)
+    const seabed = new THREE.Mesh(sandGeometry, sandMaterial)
+    Object.assign(seabed.position, { y: -0.5, z: d/4 })
+    world.scene.add(seabed)
 
     world.loadFbx('fish1', '/assets/models/fish1/fish1.fbx', false)
     world.loadFbx('fishIdle', '/assets/models/fish1/fish1@idle.fbx', false)
@@ -158,5 +177,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     world.render()
-    world.showGrid()
+
+    const btnAddFish = document.querySelector('.add-fish')
+    btnAddFish.addEventListener('click', event => {
+        fishes.push(new Fish(world))
+    })
 })

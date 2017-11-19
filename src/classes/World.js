@@ -57,13 +57,6 @@ export default class World {
         }
     }
 
-    showGrid() {
-        this.drawGridQuadrant(1, 1)
-        // this.drawGridQuadrant(1, -1)
-        // this.drawGridQuadrant(-1, 1)
-        // this.drawGridQuadrant(-1, -1)
-    }
-
     setupRenderer() {
         const renderer = new THREE.WebGLRenderer({ alpha: true })
         renderer.setSize(this.window.innerWidth, this.window.innerHeight)
@@ -73,14 +66,21 @@ export default class World {
 
     setupScene() {
         const scene = new THREE.Scene()
-        scene.background = new THREE.Color(0xeeeeee)
         this.scene = scene
     }
 
     setupLighting() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
         this.scene.add(ambientLight)
         this.ambientLight = ambientLight
+        const pointLight = new THREE.PointLight(0xffffff, 0.75, 100)
+        Object.assign(pointLight.position, { x: -10, y: 20, z: 10 })
+        this.scene.add(pointLight)
+        this.pointLight = pointLight
+        const pointLight2 = new THREE.PointLight(0xffffff, 0.75, 100)
+        Object.assign(pointLight2.position, { x: 10, y: 20, z: -10 })
+        this.scene.add(pointLight2)
+        this.pointLight2 = pointLight2
     }
 
     addAnimationMixer(mixer) {
