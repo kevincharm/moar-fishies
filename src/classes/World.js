@@ -70,7 +70,7 @@ export default class World {
     }
 
     setupLighting() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
         this.scene.add(ambientLight)
         this.ambientLight = ambientLight
         const pointLight = new THREE.PointLight(0xffffff, 0.75, 100)

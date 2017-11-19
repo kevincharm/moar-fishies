@@ -151,20 +151,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const camera = new CustomCamera(world)
     Object.assign(camera.position, { y: 10, z: 40 })
 
-    const w = 80
+    const w = 200
     const h = 20
-    const d = 30
+    const d = 40
     const t = 0.2
 
     const sandTexture = new THREE.TextureLoader().load('/assets/materials/sand.jpg')
     const sandMaterial = new THREE.MeshLambertMaterial({ map: sandTexture })
     const sandGeometry = new THREE.BoxGeometry(w, 1, d)
     const seabed = new THREE.Mesh(sandGeometry, sandMaterial)
-    Object.assign(seabed.position, { y: -0.5, z: d/4 })
+    seabed.position.y = -0.5
     world.scene.add(seabed)
+
+    world.scene.fog = new THREE.Fog(0x0, 30, 75)
 
     world.loadFbx('fish1', '/assets/models/fish1/fish1.fbx', false)
     world.loadFbx('fishIdle', '/assets/models/fish1/fish1@idle.fbx', false)
+    world.loadFbx('grass', '/assets/models/grass/grass.fbx', false)
     const fishes = []
     world.onLoaded(() => {
         let startingFish = 1
@@ -174,6 +177,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(moreFish, 1000+Math.round(Math.random()*1500))
             }
         })()
+
+        let grasses = 50
+        const grass = world.loadedFbx['grass']
+        const grassMat = grass.children[0].material
+        grassMat.color.set(0x00aa00)
+        grassMat.transparent = true
+        grassMat.opacity = 0.8
+        while (grasses-- > 0) {
+            const g = grass.clone()
+            Object.assign(g.scale, { x: 0.075, y: 0.075, z: 0.075 })
+            Object.assign(g.position, {
+                x: Math.random()*50-25,
+                z: Math.random()*20-5
+            })
+            g.rotation.y = Math.random()*2*Math.PI
+            world.scene.add(g)
+        }
     })
 
     world.render()
